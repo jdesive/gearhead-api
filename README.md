@@ -24,18 +24,21 @@ Backend REST API to store data for the GearHead frontend.
   "model": "Avalon",
   "color": "Black",
   "vin": 23456567435754,
-  "miles": 167900,
   "oilType": "Mobile 1 5w30",
-  "oilAmount": 6.5,
+  "oilCapacity": 6.5,
+  "coolantCapacity": 12.5,
   "oilFilterType": "",
-  "tirePressure": 35,
+  "oilFilterModel": "",
+  "airFilterModel": "",
+  "cabinFilterModel": "",
+  "batteryModel": "",
   "maintenanceRecords": []
 }
 ```
 ### MaintenanceRecord
 ```json
 {
-  "timestamp": "MM-dd-yyyy",
+  "timestamp": "09-15-2017",
   "oldValue": "",
   "newValue": "",
   "fieldname": "",

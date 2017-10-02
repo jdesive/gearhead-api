@@ -1,15 +1,26 @@
+/*
+ * Copyright (C) 2017  GearHead
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.desive.gearhead.entities;
 
-// @formatter:off
-
-import com.desive.gearhead.support.security.CustomUserDetails;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Date;
 
 @EqualsAndHashCode(of = { "username", "roles", "enabled" })
 @ToString(of = { "id", "username" })
@@ -21,7 +32,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private int userid;
 
 	@Column(nullable = false, unique = true, length = MAX_LENGTH_USERNAME)
 	private String username;
@@ -30,35 +41,26 @@ public class User {
 	private String password;
 
 	private boolean enabled;
-	private LocalDateTime creationTime;
-	private LocalDateTime modificationTime;
-
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Set<Role> roles = new HashSet<Role>();
+	private Date creationTime;
+	private Date modificationTime;
 
 	public User() {
 	}
 
-	/**
-	 * Constructor used exclusively by {@link CustomUserDetails}}
-	 *
-	 * @param user
-	 */
-	public User(final User user) {
-		this.id = user.id;
-		this.username = user.username;
-		this.password = user.password;
-		this.enabled = user.enabled;
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+		this.enabled = true;
 	}
 
 	@PrePersist
 	public void prePersist() {
-		creationTime = LocalDateTime.now();
+		creationTime = new Date(System.currentTimeMillis());
 	}
 
 	@PreUpdate
 	public void preUpdate() {
-		modificationTime = LocalDateTime.now();
+		modificationTime = new Date(System.currentTimeMillis());
 	}
 
 	public static int getMaxLengthUsername() {
@@ -66,11 +68,11 @@ public class User {
 	}
 
 	public Integer getId() {
-		return id;
+		return userid;
 	}
 
 	public void setId(Integer id) {
-		this.id = id;
+		this.userid = id;
 	}
 
 	public String getUsername() {
@@ -97,27 +99,20 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public LocalDateTime getCreationTime() {
+	public Date getCreationTime() {
 		return creationTime;
 	}
 
-	public void setCreationTime(LocalDateTime creationTime) {
+	public void setCreationTime(Date creationTime) {
 		this.creationTime = creationTime;
 	}
 
-	public LocalDateTime getModificationTime() {
+	public Date getModificationTime() {
 		return modificationTime;
 	}
 
-	public void setModificationTime(LocalDateTime modificationTime) {
+	public void setModificationTime(Date modificationTime) {
 		this.modificationTime = modificationTime;
 	}
 
-	public Set<Role> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}
 }

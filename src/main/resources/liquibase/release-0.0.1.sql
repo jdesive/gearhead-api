@@ -28,4 +28,13 @@ CREATE TABLE maintenance_record (
   "timestamp"   DATE
 );
 
+CREATE TABLE users (
+  userid      BIGSERIAL PRIMARY KEY,
+  username    VARCHAR(30),
+  "password"  TEXT,
+  enabled     BOOLEAN,
+  creation_time DATE,
+  modification_time DATE
+);
+
 --rollback SELECT 1;

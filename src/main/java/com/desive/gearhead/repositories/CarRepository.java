@@ -17,12 +17,9 @@
 package com.desive.gearhead.repositories;
 
 import com.desive.gearhead.entities.Car;
+import com.desive.gearhead.repositories.interfaces.ICarRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-@Repository
-public interface CarRepository extends JpaRepository<Car, Integer>{
-
-    Car findByVin(long vin);
-
+public interface CarRepository extends JpaRepository<Car, Integer>, JpaSpecificationExecutor<Car>, ICarRepository{
 }

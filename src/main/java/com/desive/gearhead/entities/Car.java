@@ -16,35 +16,55 @@
 
 package com.desive.gearhead.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @ToString
+@Table(name = "cars")
+@JsonPropertyOrder({"id", "plateNumber", "make", "model", "color", "vin"}) // Just for my viewing in Restlet client during dev
 public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int carsid;
-    private String make;
-    private String model;
-    private String color;
-    private long vin;
-    private String oilType;
-    private double oilCapacity;
-    private double coolantCapacity;
-    private String oilFilterModel;
-    private String airFilterModel;
-    private String cabinFilterModel;
-    private String batteryModel;
+    @Column(nullable = false)
+    private String make = "";
+    @Column(nullable = false)
+    private String model = "";
+    private String color = "";
+    @Column(nullable = false)
+    private String vin = "";
+    private String oilType = "";
+    private double oilCapacity = 0.0;
+    private double coolantCapacity = 0.0;
+    private String oilFilterModel = "";
+    private String airFilterModel = "";
+    private String cabinFilterModel = "";
+    private String batteryModel = "";
+    private String plateNumber = "";
+    private boolean dotRegistered = false;
+    private String dotNumber = "";
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "car")
-    private List<MaintenanceRecord> maintenanceRecords;
+    @JsonIgnoreProperties("car")
+    private Set<CarNote> notes = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "car")
+    @JsonIgnoreProperties("car")
+    private Set<MaintenanceRecord> maintenanceRecords = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "cars_drivers", joinColumns = @JoinColumn(name = "cars_id"),
+            inverseJoinColumns = @JoinColumn(name = "drivers_id"))
+    private Set<Driver> drivers = new HashSet<>();
 
     public Car() {
     }
@@ -81,11 +101,11 @@ public class Car {
         this.color = color;
     }
 
-    public long getVin() {
+    public String getVin() {
         return vin;
     }
 
-    public void setVin(long vin) {
+    public void setVin(String vin) {
         this.vin = vin;
     }
 
@@ -145,13 +165,51 @@ public class Car {
         this.batteryModel = batteryModel;
     }
 
-    @JsonIgnore
-    @JsonProperty(value = "maintenanceRecords")
-    public List<MaintenanceRecord> getMaintenanceRecords() {
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
+    public boolean isDotRegistered() {
+        return dotRegistered;
+    }
+
+    public void setDotRegistered(boolean dotRegistered) {
+        this.dotRegistered = dotRegistered;
+    }
+
+    public String getDotNumber() {
+        return dotNumber;
+    }
+
+    public void setDotNumber(String dotNumber) {
+        this.dotNumber = dotNumber;
+    }
+
+    public Set<CarNote> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(Set<CarNote> notes) {
+        this.notes = notes;
+    }
+
+    public Set<MaintenanceRecord> getMaintenanceRecords() {
         return maintenanceRecords;
     }
 
-    public void setMaintenanceRecords(List<MaintenanceRecord> maintenanceRecords) {
+    public void setMaintenanceRecords(Set<MaintenanceRecord> maintenanceRecords) {
         this.maintenanceRecords = maintenanceRecords;
+    }
+
+    public Set<Driver> getDrivers() {
+        return drivers;
+    }
+
+    public void setDrivers(Set<Driver> drivers) {
+        this.drivers = drivers;
     }
 }

@@ -14,17 +14,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.gearhead.repositories;
+package com.desive.gearhead.controllers;
 
-import com.desive.gearhead.entities.User;
-import com.desive.gearhead.repositories.interfaces.IUserRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User>, IUserRepository {
+/*
+ Created by Jack DeSive on 10/4/2017 at 4:56 PM
+*/
+@RestController
+public class UtilController {
 
-	User findByUsername(String username);
+    @ApiOperation(tags = {"Util"}, value = "Get API Health", nickname = "Health")
+    @RequestMapping(method = RequestMethod.GET, value = "/health")
+    public String getHealth(){
+        return "UP";
+    }
 
 }

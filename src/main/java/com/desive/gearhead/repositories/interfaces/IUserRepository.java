@@ -14,8 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.gearhead.entities;
+package com.desive.gearhead.repositories.interfaces;
 
-public enum RoleName {
-	ROLE_ADMIN, ROLE_USER
+import com.desive.gearhead.entities.User;
+import com.desive.gearhead.repositories.criteria.UserSearchCriteria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+/*
+ Custom JPA query methods
+
+ Created by Jack DeSive on 10/3/2017 at 3:12 AM
+*/
+public interface IUserRepository {
+
+    Page<User> findByCriteria(UserSearchCriteria criteria, Pageable pageable);
+
 }

@@ -14,17 +14,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.gearhead.repositories;
+package com.desive.gearhead.repositories.criteria;
 
-import com.desive.gearhead.entities.User;
-import com.desive.gearhead.repositories.interfaces.IUserRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+/*
+ Created by Jack DeSive on 10/4/2017 at 9:55 PM
+*/
+public class MaintenanceRecordSearchCriteria {
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User>, IUserRepository {
 
-	User findByUsername(String username);
+
+    public boolean isEmpty() {
+        return false;
+    }
 
 }

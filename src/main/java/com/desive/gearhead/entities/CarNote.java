@@ -23,36 +23,63 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Date;
 
+/*
+ Created by Jack DeSive on 10/1/2017 at 9:48 PM
+*/
 @Entity
 @ToString
-@Table(name = "maintenance_records")
-public class MaintenanceRecord {
+@Table(name = "car_notes")
+public class CarNote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int recordid;
+    private int noteid;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "car")
-    @JsonIgnoreProperties("maintenanceRecords")
+    @JsonIgnoreProperties("notes")
     private Car car;
 
+    private String note = "";
     @JsonFormat(pattern = "MM-dd-yyyy")
     private Date timestamp;
-    private long miles;
-    private String maintainer;
-    private String actiontaken;
-    private String notes;
 
-    public MaintenanceRecord() {
+    public CarNote() {
     }
 
-    public int getId() {
-        return recordid;
+    public CarNote(Car car, String note, Date timestamp) {
+        this.car = car;
+        this.note = note;
+        this.timestamp = timestamp;
     }
 
-    public void setId(int recordid) {
-        this.recordid = recordid;
+    @PrePersist
+    public void prePersist() {
+        timestamp = new Date(System.currentTimeMillis());
+    }
+
+    public int getNoteid() {
+        return noteid;
+    }
+
+    public void setNoteid(int noteid) {
+        this.noteid = noteid;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public Date getTimestamp() {
@@ -61,45 +88,5 @@ public class MaintenanceRecord {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public long getMiles() {
-        return miles;
-    }
-
-    public void setMiles(long miles) {
-        this.miles = miles;
-    }
-
-    public String getMaintainer() {
-        return maintainer;
-    }
-
-    public void setMaintainer(String maintainer) {
-        this.maintainer = maintainer;
-    }
-
-    public String getActiontaken() {
-        return actiontaken;
-    }
-
-    public void setActiontaken(String actiontaken) {
-        this.actiontaken = actiontaken;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public Car getCar() {
-        return car;
-    }
-
-    public void setCar(Car cars) {
-        this.car = cars;
     }
 }

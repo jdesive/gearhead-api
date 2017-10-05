@@ -18,32 +18,36 @@ package com.desive.gearhead.controllers;
 
 import com.desive.gearhead.entities.User;
 import com.desive.gearhead.repositories.UserRepository;
+import com.desive.gearhead.repositories.criteria.UserSearchCriteria;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 public class UserController {
 
-	@Autowired
-	private UserRepository userRepository;
+	@Autowired private UserRepository userRepository;
+	@Autowired private ObjectMapper objectMapper;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@RequestMapping(value = "/users", method = RequestMethod.GET)
-	public List<User> findAll() {
-		return userRepository.findAll();
+	@ApiOperation(tags = {"Users"}, value = "Search for Users", nickname = "Search", produces = "applications/json")
+	@RequestMapping(value = "/users", method = RequestMethod.GET, produces = {"application/json"})
+	public Page<User> searchUsers(@RequestParam(value = "username", required = false) String username,
+								  @RequestParam(value = "id", required = false) Integer id,
+								  @RequestParam(value = "enabled", required = false) Boolean enabled,
+								  @RequestParam(value = "page", required = false) int page,
+								  @RequestParam(value = "size", required = false) int size) {
+		UserSearchCriteria criteria = new UserSearchCriteria(id, username, enabled);
+		return userRepository.findByCriteria(criteria, new PageRequest(page, size));
 	}
 
-	@RequestMapping(value = "/signin", method = RequestMethod.GET, params = {"username", "password"})
+	@ApiOperation(tags = {"Users"}, value = "Check Sign In credentials", nickname = "Sign Id", produces = "applications/json")
+	@RequestMapping(value = "/signin", method = RequestMethod.GET, produces = {"application/json"})
 	public ObjectNode signin(@RequestParam("username")String username, @RequestParam("password")String password){
 		ObjectNode response = objectMapper.createObjectNode();
 
@@ -64,7 +68,9 @@ public class UserController {
 		return response;
 	}
 
-	@RequestMapping(value = "/signup", method = RequestMethod.GET, params = {"username", "password"})
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(tags = {"Users"}, value = "Sign Up to get credentials", nickname = "Sign Up", produces = "applications/json")
+	@RequestMapping(value = "/signup", method = RequestMethod.GET, produces = {"application/json"})
 	public ObjectNode signup(@RequestParam("username")String username, @RequestParam("password")String password){
 		ObjectNode response = objectMapper.createObjectNode();
 		if(userRepository.findByUsername(username) != null){

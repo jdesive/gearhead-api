@@ -17,87 +17,82 @@
 package com.desive.gearhead.controllers;
 
 import com.desive.gearhead.entities.Car;
-import com.desive.gearhead.entities.MaintenanceRecord;
-import com.desive.gearhead.exceptions.CarNotFoundException;
 import com.desive.gearhead.repositories.CarRepository;
-import com.desive.gearhead.repositories.MaintenanceRecordRepository;
+import com.desive.gearhead.repositories.criteria.CarSearchCriteria;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CarController {
 
-    @Autowired
-    private CarRepository carRepository;
+    @Autowired private CarRepository carRepository;
+    private Logger logger = LoggerFactory.getLogger(CarController.class);
 
-    @Autowired
-    private MaintenanceRecordRepository maintenanceRecordRepository;
-
-    /*
-    List all cars
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/cars/all", params = {"page", "size"})
-    private Page<Car> listCars(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size){
-        return this.carRepository.findAll(new PageRequest(page, size));
-    }
-
-    /*
-    Get a specific car by id
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/cars/id/{id}")
-    private Car getCarById(@PathVariable(name = "id") int id){
-        Car car = this.carRepository.findOne(id);
-        if(car == null)
-            throw new CarNotFoundException(id);
-
-        return car;
-    }
-
-    /*
-    Get a specific car by id
-    */
-    @RequestMapping(method = RequestMethod.GET, value = "/cars/vin/{vin}")
-    private Car getCarByVin(@PathVariable(name = "vin") long vin){
-        Car car = this.carRepository.findByVin(vin);
-        if(car == null)
-            throw new CarNotFoundException(vin);
-
-        return car;
-    }
-
-    /*
-    Save a new car
-     */
-    @RequestMapping(method = RequestMethod.POST, value = "/cars")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(tags = {"Cars"}, value = "Register a Car", nickname = "Register", produces = "applications/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/cars", produces = "application/json")
     private Car addCar(@RequestBody Car car){
+        logger.debug(String.format("Inserting %s into cars table", car.toString()));
         return this.carRepository.save(car);
     }
 
-    /*
-    Save a new maintenance record
-     */
-    @RequestMapping(method = RequestMethod.POST, value = "/cars/{id}/maintenance")
-    private MaintenanceRecord addMaintenanceRecord(@PathVariable int id, @RequestBody MaintenanceRecord record){
-        Car car = this.carRepository.findOne(id);
-        if(car == null)
-            throw new CarNotFoundException(id);
-        record.setCar(car);
-        return this.maintenanceRecordRepository.save(record);
-    }
-
-    /*
-    Get all maintenance records for a car by id
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/cars/{id}/maintenance/all", params = {"page", "size"})
-    private Page<MaintenanceRecord> getMaintenanceRecordsById(@PathVariable int id, @RequestParam(name = "page", defaultValue = "0")
-            int page, @RequestParam(name = "size", defaultValue = "20") int size){
-
-        Car car = this.carRepository.findOne(id);
-        if(car == null)
-            throw new CarNotFoundException(id);
-        return this.maintenanceRecordRepository.findByCar(car, new PageRequest(page, size));
+    @ApiOperation(tags = {"Cars"}, value = "Search for Cars", nickname = "Search", produces = "applications/json")
+    @RequestMapping(method = RequestMethod.GET, value = "/cars", produces = "application/json")
+    private Page<Car> listCars(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                               @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                               @RequestParam(name = "id", required = false) Integer carid,
+                               @RequestParam(name = "make", required = false) String make,
+                               @RequestParam(name = "model", required = false) String model,
+                               @RequestParam(name = "color", required = false) String color,
+                               @RequestParam(name = "vin", required = false) String vin,
+                               @RequestParam(name = "plate", required = false) String plate,
+                               @RequestParam(name = "dot", required = false) String dot,
+                               @RequestParam(name = "oilType", required = false) String oilType,
+                               @RequestParam(name = "oilFilterModel", required = false) String oilFilterModel,
+                               @RequestParam(name = "airFilterModel", required = false) String airFilterModel,
+                               @RequestParam(name = "cabinFilterModel", required = false) String cabinFilterModel,
+                               @RequestParam(name = "batteryModel", required = false) String batteryModel,
+                               @RequestParam(name = "dotRegistered", required = false) Boolean dotRegistered){
+        logger.debug("Building car search criteria...");
+        CarSearchCriteria criteria = new CarSearchCriteria();
+        if(carid != null)
+            criteria.setId(carid);
+        if(make != null)
+            criteria.setMake(make);
+        if(model != null)
+            criteria.setModel(model);
+        if(color != null)
+            criteria.setColor(color);
+        if(vin != null)
+            criteria.setVin(vin);
+        if(plate != null)
+            criteria.setPlateNumber(plate);
+        if(dot != null)
+            criteria.setDotNumber(dot);
+        if(oilType != null)
+            criteria.setOilType(oilType);
+        if(oilFilterModel != null)
+            criteria.setOilFilterModel(oilFilterModel);
+        if(airFilterModel != null)
+            criteria.setAirFilterModel(airFilterModel);
+        if(cabinFilterModel != null)
+            criteria.setCabinFilterModel(cabinFilterModel);
+        if(batteryModel != null)
+            criteria.setBatteryModel(batteryModel);
+        if(dotRegistered != null)
+            criteria.setDotRegistered(dotRegistered);
+        if(make != null)
+            criteria.setMake(make);
+        if(make != null)
+            criteria.setMake(make);
+        logger.debug(String.format("Querying cars table by %s", criteria.toString()));
+        return this.carRepository.findByCriteria(criteria, new PageRequest(page, size));
     }
 
 }

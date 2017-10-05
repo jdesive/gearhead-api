@@ -16,15 +16,10 @@
 
 package com.desive.gearhead.repositories;
 
-import com.desive.gearhead.entities.User;
-import com.desive.gearhead.repositories.interfaces.IUserRepository;
+import com.desive.gearhead.entities.CarNote;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User>, IUserRepository {
-
-	User findByUsername(String username);
-
+public interface CarNoteRepository extends JpaRepository<CarNote, Integer>{
 }

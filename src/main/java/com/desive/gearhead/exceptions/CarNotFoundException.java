@@ -25,8 +25,4 @@ public class CarNotFoundException extends RuntimeException{
     public CarNotFoundException(int id) {
         super("could not find a car with id " + id + ".");
     }
-
-    public CarNotFoundException(long vin) {
-        super("could not find a car with vin " + vin + ".");
-    }
 }

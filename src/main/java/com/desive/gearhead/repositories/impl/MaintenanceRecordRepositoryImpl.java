@@ -14,22 +14,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.gearhead.repositories;
+package com.desive.gearhead.repositories.impl;
 
-import com.desive.gearhead.entities.Car;
 import com.desive.gearhead.entities.MaintenanceRecord;
+import com.desive.gearhead.repositories.MaintenanceRecordRepository;
+import com.desive.gearhead.repositories.criteria.MaintenanceRecordSearchCriteria;
 import com.desive.gearhead.repositories.interfaces.IMaintenanceRecordRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.Date;
+/*
+ Created by Jack DeSive on 10/2/2017 at 10:55 PM
+*/
+public class MaintenanceRecordRepositoryImpl implements IMaintenanceRecordRepository {
 
-public interface MaintenanceRecordRepository extends JpaRepository<MaintenanceRecord, Integer>, JpaSpecificationExecutor<MaintenanceRecord>, IMaintenanceRecordRepository {
+    @Autowired
+    private MaintenanceRecordRepository maintenanceRecordRepository;
 
-    Page<MaintenanceRecord> findByCar(Car car, Pageable pageable);
-
-    Page<MaintenanceRecord> findByTimestamp(Date date, Pageable pageable);
+    @Override
+    public Page<MaintenanceRecord> findByCriteria(MaintenanceRecordSearchCriteria criteria, Pageable pageable) {
+        if(criteria.isEmpty())
+            return maintenanceRecordRepository.findAll(pageable);
+        return maintenanceRecordRepository.findAll(
+                pageable);
+    }
 
 }

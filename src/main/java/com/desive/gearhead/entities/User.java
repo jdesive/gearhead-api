@@ -22,7 +22,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Date;
 
-@EqualsAndHashCode(of = { "username", "roles", "enabled" })
+@EqualsAndHashCode(of = { "username", "enabled" })
 @ToString(of = { "id", "username" })
 @Entity
 @Table(name = "users")
@@ -35,12 +35,12 @@ public class User {
 	private int userid;
 
 	@Column(nullable = false, unique = true, length = MAX_LENGTH_USERNAME)
-	private String username;
+	private String username = "";
 
 	@Column(nullable = false)
-	private String password;
+	private String password = "";
 
-	private boolean enabled;
+	private boolean enabled = true;
 	private Date creationTime;
 	private Date modificationTime;
 

@@ -70,7 +70,7 @@ public class UserSearchCriteria {
 
     public static Specification<User> withId(Integer id){
         if(id != null){
-            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), id)));
+            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("userid"), id)));
         }
         return null;
     }

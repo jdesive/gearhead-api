@@ -18,6 +18,7 @@ package com.desive.gearhead.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ import java.util.Date;
 @Entity
 @ToString
 @Table(name = "car_notes")
+@JsonPropertyOrder({"id"})
 public class CarNote {
 
     @Id
@@ -36,13 +38,13 @@ public class CarNote {
     private int noteid;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "car")
+    @JoinColumn(name = "car", nullable = false)
     @JsonIgnoreProperties("notes")
     private Car car;
 
     private String note = "";
-    @JsonFormat(pattern = "MM-dd-yyyy")
-    private Date timestamp;
+    @JsonFormat(pattern = "MM-dd-yyyy hh:mm:ss")
+    private Date timestamp = new Date(System.currentTimeMillis());
 
     public CarNote() {
     }

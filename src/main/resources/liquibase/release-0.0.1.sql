@@ -52,7 +52,7 @@ CREATE TABLE drivers (
   cars                BIGINT REFERENCES cars (carsid),
   license_number      TEXT UNIQUE,
   dl_class            TEXT,
-  "name"              TEXT UNIQUE,
+  "name"              TEXT,
   date_of_birth       DATE
 
 );
@@ -60,9 +60,8 @@ CREATE TABLE drivers (
 CREATE TABLE cars_drivers (
   cars_id             BIGINT,
   drivers_id          BIGINT
-
 );
 
 INSERT INTO users (userid, username, "password", enabled, creation_time, modification_time)
-VALUES (1, 'gearhead', 'gearhead', true, '01-OCT-17', null);
+VALUES (0, 'gearhead', 'gearhead', true, '01-OCT-17', null);
 --rollback SELECT 1;

@@ -26,9 +26,24 @@ import java.util.Arrays;
 */
 public class DriverSearchCriteria {
 
-    String name;
-    String licenseNumber;
-    Integer carid;
+    String name, licenseNumber;
+    Integer id, carid;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getCarid() {
+        return carid;
+    }
+
+    public void setCarid(Integer carid) {
+        this.carid = carid;
+    }
 
     public String getName() {
         return name;
@@ -46,18 +61,17 @@ public class DriverSearchCriteria {
         this.licenseNumber = licenseNumber;
     }
 
-    public int getCarid() {
-        return carid;
-    }
-
-    public void setCarid(int carid) {
-        this.carid = carid;
-    }
-
     public boolean isEmpty(){
         if(name != null || licenseNumber != null || carid != null)
             return false;
         return true;
+    }
+
+    public static Specification<Driver> withId(Integer id){
+        if(id != null){
+            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("driverid"), id)));
+        }
+        return null;
     }
 
     public static Specification<Driver> withName(String name){
@@ -69,14 +83,14 @@ public class DriverSearchCriteria {
 
     public static Specification<Driver> withLicenseNumber(String number){
         if(number != null){
-            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("license_number"), number)));
+            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("licenseNumber"), number)));
         }
         return null;
     }
 
     public static Specification<Driver> withCarId(Integer carid){
         if(carid != null){
-            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.join("car").get("carsid"), carid)));
+            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.join("cars").get("carsid"), carid)));
         }
         return null;
     }

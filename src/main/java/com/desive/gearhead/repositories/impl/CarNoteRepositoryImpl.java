@@ -16,33 +16,31 @@
 
 package com.desive.gearhead.repositories.impl;
 
-import com.desive.gearhead.entities.MaintenanceRecord;
-import com.desive.gearhead.repositories.MaintenanceRecordRepository;
-import com.desive.gearhead.repositories.criteria.MaintenanceRecordSearchCriteria;
-import com.desive.gearhead.repositories.interfaces.IMaintenanceRecordRepository;
+import com.desive.gearhead.entities.CarNote;
+import com.desive.gearhead.repositories.CarNoteRepository;
+import com.desive.gearhead.repositories.criteria.CarNoteSearchCriteria;
+import com.desive.gearhead.repositories.interfaces.ICarNoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import static com.desive.gearhead.repositories.criteria.MaintenanceRecordSearchCriteria.*;
+import static com.desive.gearhead.repositories.criteria.CarNoteSearchCriteria.*;
 import static org.springframework.data.jpa.domain.Specifications.where;
 
 /*
  Created by Jack DeSive on 10/2/2017 at 10:55 PM
 */
-public class MaintenanceRecordRepositoryImpl implements IMaintenanceRecordRepository {
+public class CarNoteRepositoryImpl implements ICarNoteRepository {
 
     @Autowired
-    private MaintenanceRecordRepository maintenanceRecordRepository;
+    private CarNoteRepository carNoteRepository;
 
     @Override
-    public Page<MaintenanceRecord> findByCriteria(MaintenanceRecordSearchCriteria criteria, Pageable pageable) {
+    public Page<CarNote> findByCriteria(CarNoteSearchCriteria criteria, Pageable pageable) {
         if(criteria.isEmpty())
-            return maintenanceRecordRepository.findAll(pageable);
-        return maintenanceRecordRepository.findAll(where(withId(criteria.getId()))
+            return carNoteRepository.findAll(pageable);
+        return carNoteRepository.findAll(where(withId(criteria.getId()))
                 .and(withCarId(criteria.getCarid()))
-                .and(withActiontaken(criteria.getActiontaken()))
-                .and(withMaintainer(criteria.getMaintainer()))
                 .and(withStartdate(criteria.getStartdate()))
                 .and(withEnddate(criteria.getEnddate())),
                 pageable);

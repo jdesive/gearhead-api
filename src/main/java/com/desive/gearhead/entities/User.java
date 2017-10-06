@@ -16,6 +16,8 @@
 
 package com.desive.gearhead.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -26,6 +28,7 @@ import java.util.Date;
 @ToString(of = { "id", "username" })
 @Entity
 @Table(name = "users")
+@JsonPropertyOrder({"id"})
 public class User {
 
 	public static final int MAX_LENGTH_USERNAME = 30;
@@ -41,7 +44,10 @@ public class User {
 	private String password = "";
 
 	private boolean enabled = true;
-	private Date creationTime;
+	@JsonFormat(pattern = "MM-dd-yyyy hh:mm:ss")
+	private Date creationTime = new Date(System.currentTimeMillis());
+
+	@JsonFormat(pattern = "MM-dd-yyyy hh:mm:ss")
 	private Date modificationTime;
 
 	public User() {
@@ -53,18 +59,9 @@ public class User {
 		this.enabled = true;
 	}
 
-	@PrePersist
-	public void prePersist() {
-		creationTime = new Date(System.currentTimeMillis());
-	}
-
 	@PreUpdate
 	public void preUpdate() {
 		modificationTime = new Date(System.currentTimeMillis());
-	}
-
-	public static int getMaxLengthUsername() {
-		return MAX_LENGTH_USERNAME;
 	}
 
 	public Integer getId() {

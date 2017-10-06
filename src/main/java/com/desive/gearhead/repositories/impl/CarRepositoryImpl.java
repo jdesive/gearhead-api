@@ -51,7 +51,8 @@ public class CarRepositoryImpl implements ICarRepository {
                 .and(withAirFilterModel(criteria.getAirFilterModel()))
                 .and(withCabinFilterModel(criteria.getCabinFilterModel()))
                 .and(withBatteryModel(criteria.getBatteryModel()))
-                .and(withDotRegistered(criteria.isDotRegistered())), pageable);
+                .and(withDotRegistered(criteria.isDotRegistered())),
+                pageable);
     }
 
 }

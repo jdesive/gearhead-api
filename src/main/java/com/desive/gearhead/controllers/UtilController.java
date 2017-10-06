@@ -17,6 +17,8 @@
 package com.desive.gearhead.controllers;
 
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,9 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UtilController {
 
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @ApiOperation(tags = {"Util"}, value = "Get API Health", nickname = "Health")
     @RequestMapping(method = RequestMethod.GET, value = "/health")
     public String getHealth(){
+        logger.debug("Building API health...");
         return "UP";
     }
 

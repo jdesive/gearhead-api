@@ -42,8 +42,9 @@ public class UserRepositoryImpl implements IUserRepository {
         if(criteria.isEmpty())
             return userRepository.findAll(pageable);
         return userRepository.findAll(where(withId(criteria.getId()))
-        .and(withUsername(criteria.getUsername()))
-        .and(withIsEnabled(criteria.getEnabled())), pageable);
+                .and(withUsername(criteria.getUsername()))
+                .and(withIsEnabled(criteria.getEnabled())),
+                pageable);
     }
 
 }

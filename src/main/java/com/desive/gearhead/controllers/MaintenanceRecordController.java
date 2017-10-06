@@ -28,8 +28,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 public class MaintenanceRecordController {
@@ -38,25 +41,44 @@ public class MaintenanceRecordController {
     @Autowired private MaintenanceRecordRepository maintenanceRecordRepository;
     private Logger logger = LoggerFactory.getLogger(MaintenanceRecordController.class);
 
-
     @ApiOperation(tags = {"Maintenance Record"}, value = "Search Maintenance Records", nickname = "Search", produces = "applications/json")
     @RequestMapping(method = RequestMethod.GET, value = "/maintenance", produces = "application/json")
-    private Page<MaintenanceRecord> listMaintenanceRecords(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                                           @RequestParam(name = "size", required = false, defaultValue = "20") int size){
+    private Page<MaintenanceRecord> searchMaintenanceRecords(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                           @RequestParam(name = "size", required = false, defaultValue = "20") int size,
+                                                           @RequestParam(name = "id", required = false) Integer id,
+                                                           @RequestParam(name = "carid", required = false) Integer carid,
+                                                           @RequestParam(name = "actiontaken", required = false) String actiontaken,
+                                                           @RequestParam(name = "maintainer", required = false) String maintainer,
+                                                           @RequestParam(name = "startdate", required = false) @DateTimeFormat(pattern = "MM-dd-yyyy") Date startdate,
+                                                           @RequestParam(name = "enddate", required = false) @DateTimeFormat(pattern = "MM-dd-yyyy") Date enddate){
+        logger.debug("Building maintenance record search criteria...");
         MaintenanceRecordSearchCriteria criteria = new MaintenanceRecordSearchCriteria();
+        if(id != null)
+            criteria.setId(id);
+        if(carid != null)
+            criteria.setCarid(carid);
+        if(actiontaken != null)
+            criteria.setActiontaken(actiontaken);
+        if(maintainer != null)
+            criteria.setMaintainer(maintainer);
+        if(startdate != null)
+            criteria.setStartdate(startdate);
+        if(enddate != null)
+            criteria.setEnddate(enddate);
+        logger.debug("Querying maintenance_records table by [{}]", criteria.toString());
         return this.maintenanceRecordRepository.findByCriteria(criteria, new PageRequest(page, size));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(tags = {"Maintenance Record"}, value = "Register a Maintenance Record", nickname = "Register", produces = "applications/json")
     @RequestMapping(method = RequestMethod.POST, value = "/maintenance/{carid}", produces = "application/json")
-    private MaintenanceRecord addMaintenanceRecord(@PathVariable("carid") int carid, @RequestBody MaintenanceRecord record){
-        logger.debug(String.format("Querying cars table for car with id %d", carid));
+    private MaintenanceRecord registerMaintenanceRecord(@PathVariable("carid") int carid, @RequestBody MaintenanceRecord record){
+        logger.debug("Querying cars table for car with id [{}]", carid);
         Car car = this.carRepository.findOne(carid);
         if(car == null)
             throw new CarNotFoundException(carid);
         record.setCar(car);
-        logger.debug(String.format("Inserting %s into maintenance_records table referencing %s ", record.toString(), car.toString()));
+        logger.debug("Inserting [{}] into maintenance_records table referencing [{}]", record.toString(), car.toString());
         return this.maintenanceRecordRepository.save(record);
     }
 

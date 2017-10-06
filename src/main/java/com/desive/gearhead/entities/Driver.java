@@ -18,9 +18,10 @@ package com.desive.gearhead.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,17 +30,19 @@ import java.util.Set;
  Created by Jack DeSive on 10/1/2017 at 9:59 PM
 */
 @Entity
-@ToString
 @Table(name = "drivers")
+@JsonPropertyOrder({"id"})
 public class Driver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int driverid;
-    private String licenseNumber = "";
-    private String name = "";
+    @Column(nullable = false, unique = true)
+    private String licenseNumber;
+    @Column(nullable = false)
+    private String name;
     private String dlClass = "";
-    @JsonFormat(pattern = "MM-dd-yyyy")
+    @JsonFormat(pattern = "MM-dd-yyyy hh:mm:ss")
     private Date dateOfBirth;
 
     @ManyToMany(mappedBy = "drivers")
@@ -104,4 +107,26 @@ public class Driver {
     public void setCars(Set<Car> car) {
         this.cars = car;
     }
+
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder(this.getClass().getSimpleName()).append("[ ");
+        Arrays.stream(getClass().getDeclaredFields()).filter(field -> {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(this);
+                if(value != null)
+                    return true;
+            } catch (IllegalAccessException e) {}
+            return false;
+        }).forEach(field -> {
+            try {
+                stringBuilder.append(field.getName()).append("=").append(field.get(this)).append(" ");
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        });
+        return stringBuilder.append("]").toString();
+    }
+
 }

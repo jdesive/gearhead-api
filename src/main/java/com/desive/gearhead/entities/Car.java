@@ -27,19 +27,19 @@ import java.util.Set;
 @Entity
 @ToString
 @Table(name = "cars")
-@JsonPropertyOrder({"id", "plateNumber", "make", "model", "color", "vin"}) // Just for my viewing in Restlet client during dev
+@JsonPropertyOrder({"id", "plateNumber", "make", "model", "color", "vin"})
 public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int carsid;
     @Column(nullable = false)
-    private String make = "";
+    private String make;
     @Column(nullable = false)
-    private String model = "";
+    private String model;
     private String color = "";
-    @Column(nullable = false)
-    private String vin = "";
+    @Column(nullable = false, unique = true)
+    private String vin;
     private String oilType = "";
     private double oilCapacity = 0.0;
     private double coolantCapacity = 0.0;
@@ -47,7 +47,8 @@ public class Car {
     private String airFilterModel = "";
     private String cabinFilterModel = "";
     private String batteryModel = "";
-    private String plateNumber = "";
+    @Column(nullable = false)
+    private String plateNumber;
     private boolean dotRegistered = false;
     private String dotNumber = "";
 

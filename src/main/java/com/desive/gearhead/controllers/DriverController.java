@@ -39,13 +39,16 @@ public class DriverController {
 
     @ApiOperation(tags = {"Drivers"}, value = "Search for Drivers", nickname = "Search", produces = "applications/json")
     @RequestMapping(method = RequestMethod.GET, value = "/drivers", produces = {"application/json"})
-    private Page<Driver> listDrivers(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+    private Page<Driver> searchDrivers(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                   @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                   @RequestParam(name = "name", required = false) String name,
                                   @RequestParam(name = "license", required = false) String license,
-                                  @RequestParam(name = "carid", required = false) Integer carid){
+                                  @RequestParam(name = "carid", required = false) Integer carid,
+                                  @RequestParam(name = "id", required = false) Integer id){
         logger.debug("Building driver search criteria...");
         DriverSearchCriteria criteria = new DriverSearchCriteria();
+        if(id != null)
+            criteria.setId(id);
         if(name != null)
             criteria.setName(name);
         if(license != null)
@@ -59,7 +62,7 @@ public class DriverController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(tags = {"Drivers"}, value = "Register a Driver", nickname = "Register", produces = "applications/json")
     @RequestMapping(method = RequestMethod.POST, value = "/drivers", produces = {"application/json"})
-    private Driver addDriver(@RequestBody Driver driver){
+    private Driver registerDriver(@RequestBody Driver driver){
         logger.debug("Inserting [{}] into drivers table", driver.toString());
         return this.driverRepository.save(driver);
     }

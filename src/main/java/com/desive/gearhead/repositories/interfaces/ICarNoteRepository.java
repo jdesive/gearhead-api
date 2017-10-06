@@ -14,14 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.desive.gearhead.repositories;
+package com.desive.gearhead.repositories.interfaces;
 
 import com.desive.gearhead.entities.CarNote;
-import com.desive.gearhead.repositories.interfaces.ICarNoteRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+import com.desive.gearhead.repositories.criteria.CarNoteSearchCriteria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-@Repository
-public interface CarNoteRepository extends JpaRepository<CarNote, Integer>, JpaSpecificationExecutor<CarNote>, ICarNoteRepository{
+/*
+ Created by Jack DeSive on 10/2/2017 at 11:03 PM
+*/
+public interface ICarNoteRepository {
+
+    Page<CarNote> findByCriteria(CarNoteSearchCriteria criteria, Pageable pageable);
+
 }

@@ -34,17 +34,9 @@ public class CarController {
     @Autowired private CarRepository carRepository;
     private Logger logger = LoggerFactory.getLogger(CarController.class);
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(tags = {"Cars"}, value = "Register a Car", nickname = "Register", produces = "applications/json")
-    @RequestMapping(method = RequestMethod.POST, value = "/cars", produces = "application/json")
-    private Car addCar(@RequestBody Car car){
-        logger.debug(String.format("Inserting %s into cars table", car.toString()));
-        return this.carRepository.save(car);
-    }
-
     @ApiOperation(tags = {"Cars"}, value = "Search for Cars", nickname = "Search", produces = "applications/json")
     @RequestMapping(method = RequestMethod.GET, value = "/cars", produces = "application/json")
-    private Page<Car> listCars(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+    private Page<Car> searchCars(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                @RequestParam(name = "id", required = false) Integer carid,
                                @RequestParam(name = "make", required = false) String make,
@@ -91,8 +83,16 @@ public class CarController {
             criteria.setMake(make);
         if(make != null)
             criteria.setMake(make);
-        logger.debug(String.format("Querying cars table by %s", criteria.toString()));
+        logger.debug("Querying cars table by [{}]", criteria.toString());
         return this.carRepository.findByCriteria(criteria, new PageRequest(page, size));
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(tags = {"Cars"}, value = "Register a Car", nickname = "Register", produces = "applications/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/cars", produces = "application/json")
+    private Car registerCar(@RequestBody Car car){
+        logger.debug("Inserting [{}] into cars table", car.toString());
+        return this.carRepository.save(car);
     }
 
 }

@@ -16,19 +16,19 @@
 
 package com.desive.gearhead.repositories.criteria;
 
-import com.desive.gearhead.entities.MaintenanceRecord;
+import com.desive.gearhead.entities.CarNote;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Arrays;
 import java.util.Date;
 
 /*
- Created by Jack DeSive on 10/4/2017 at 9:55 PM
+ Created by Jack DeSive on 10/2/2017 at 9:26 PM
 */
-public class MaintenanceRecordSearchCriteria {
+// ... excluseNulls = true PLEASE
+public class CarNoteSearchCriteria {
 
     private Integer id, carid;
-    private String actiontaken, maintainer;
     private Date startdate, enddate;
 
     public Integer getId() {
@@ -47,22 +47,6 @@ public class MaintenanceRecordSearchCriteria {
         this.carid = carid;
     }
 
-    public String getActiontaken() {
-        return actiontaken;
-    }
-
-    public void setActiontaken(String actiontaken) {
-        this.actiontaken = actiontaken;
-    }
-
-    public String getMaintainer() {
-        return maintainer;
-    }
-
-    public void setMaintainer(String maintainer) {
-        this.maintainer = maintainer;
-    }
-
     public Date getStartdate() {
         return startdate;
     }
@@ -79,48 +63,34 @@ public class MaintenanceRecordSearchCriteria {
         this.enddate = enddate;
     }
 
-    public boolean isEmpty() {
-        if(id != null || carid != null || actiontaken != null || maintainer != null || startdate != null || enddate != null)
+    public boolean isEmpty(){
+        if(id != null || carid != null || startdate != null || enddate != null)
             return false;
         return true;
     }
 
-    public static Specification<MaintenanceRecord> withId(Integer id){
+    public static Specification<CarNote> withId(Integer id){
         if(id != null){
-            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("recordid"), id)));
+            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("noteid"), id)));
         }
         return null;
     }
 
-    public static Specification<MaintenanceRecord> withCarId(Integer carid){
+    public static Specification<CarNote> withCarId(Integer carid){
         if(carid != null){
             return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.join("car").get("carsid"), carid)));
         }
         return null;
     }
 
-    public static Specification<MaintenanceRecord> withActiontaken(String actiontaken){
-        if(actiontaken != null){
-            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("actiontaken"), actiontaken)));
-        }
-        return null;
-    }
-
-    public static Specification<MaintenanceRecord> withMaintainer(String maintainer){
-        if(maintainer != null){
-            return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("maintainer"), maintainer)));
-        }
-        return null;
-    }
-
-    public static Specification<MaintenanceRecord> withStartdate(Date startdate){
+    public static Specification<CarNote> withStartdate(Date startdate){
         if(startdate != null){
             return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("timestamp"), startdate)));
         }
         return null;
     }
 
-    public static Specification<MaintenanceRecord> withEnddate(Date enddate){
+    public static Specification<CarNote> withEnddate(Date enddate){
         if(enddate != null){
             return (((root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("timestamp"), enddate)));
         }

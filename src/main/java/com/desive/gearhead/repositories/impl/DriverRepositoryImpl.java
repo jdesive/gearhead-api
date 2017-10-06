@@ -32,16 +32,15 @@ import static org.springframework.data.jpa.domain.Specifications.where;
 */
 public class DriverRepositoryImpl implements IDriverRepository {
 
-    @Autowired
-    private DriverRepository carRepository;
+    @Autowired private DriverRepository driverRepository;
 
     @Override
     public Page<Driver> findByCriteria(DriverSearchCriteria criteria, Pageable pageable) {
         if(criteria.isEmpty())
-            return carRepository.findAll(pageable);
-        return carRepository.findAll(where(withName(criteria.getName()))
-                .and(withCarId(criteria.getCarid()))
-                .and(withLicenseNumber(criteria.getLicenseNumber())),
+            return driverRepository.findAll(pageable);
+        return driverRepository.findAll(where(withName(criteria.getName()))
+                .and(withLicenseNumber(criteria.getLicenseNumber()))
+                .and(withCarId(criteria.getCarid())),
                 pageable);
     }
 
